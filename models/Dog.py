@@ -1,6 +1,5 @@
 import pygame
 import load_files
-from config import screen, font
 
 
 class Dog(pygame.sprite.Sprite):
@@ -17,34 +16,48 @@ class Dog(pygame.sprite.Sprite):
         self.fun = fun
         self.dirty = dirty
         self.ded = False
+        self.full_eat = False
+        self.null_dirty = False
+        self.full_fun = False
+        self.fun_zero = False
+        self.compl_dirty = False
 
     def set_hunger(self, eat=False):
         if not eat and self.hunger != 0:
             self.hunger -= 10
+            self.full_eat = False
         if eat and self.hunger != 100:
             self.hunger += 10
         if self.hunger == 0:
             self.ded = True
+            self.full_eat = False
+            self.null_dirty = False
+            self.full_fun = False
+            self.fun_zero = False
+            self.compl_dirty = False
         if self.hunger == 100 and eat:
-            pass
-            # screen.blit(font.render('Your pet is already full!', True, (252, 252, 252), [350, 650]))
+            self.full_eat = True
 
     def set_fun(self, game=False):
         if not game and self.fun != 0:
             self.fun -= 10
+            self.full_fun = False
         if game and self.fun != 100:
             self.fun += 10
+            self.fun_zero = False
         if self.fun == 0:
-            print('Your pet is bored!')
+            self.fun_zero = True
         if self.fun == 100 and game:
-            print("Your pet doesn't want to play!")
+            self.full_fun = True
 
     def set_dirty(self, wash=False):
         if not wash and self.dirty != 100:
             self.dirty += 10
+            self.compl_dirty = False
         if wash and self.dirty != 0:
             self.dirty -= 10
+            self.compl_dirty = False
         if self.dirty == 100:
-            print('Your pet is very dirty!')
+            self.compl_dirty = True
         if self.dirty == 0 and wash:
-            print('Your pet is now completely clean!')
+            self.null_dirty = True

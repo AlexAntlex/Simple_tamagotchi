@@ -4,7 +4,7 @@ import sys
 import keyboard
 import pygame
 
-from config import screen, background_image, clock, SCR_SIZE, FOR_QUIT, FOR_PET, creatures, font
+from config import screen, background_image, clock, SCR_SIZE, FOR_QUIT, FOR_PET, creatures, font, font_min
 from models.Buttons import simple_buttons
 from models.Dog import Dog
 
@@ -45,13 +45,23 @@ def pet():
             creature.set_hunger()
         if creature.ded:
             screen.blit(font.render('Your pet died...', True, (252, 252, 252)), [350, 550])
+        if creature.null_dirty:
+            screen.blit(font_min.render('Your pet is now completely clean!', True, (252, 252, 252)), [350, 550])
+        if creature.full_fun:
+            screen.blit(font_min.render("Your pet doesn't want to play!", True, (252, 252, 252)), [350, 585])
+        if creature.full_eat:
+            screen.blit(font_min.render('Your pet is already full!', True, (252, 252, 252)), [350, 610])
+        if creature.fun_zero:
+            screen.blit(font_min.render('Your pet is bored!', True, (252, 252, 252)), [350, 625])
+        if creature.compl_dirty:
+            screen.blit(font_min.render('Your pet is very dirty!', True, (252, 252, 252)), [350, 650])
         draw_params(creature.hunger, "Hunger", ([20, 20], [190, 20]))
         draw_params(creature.dirty, "Dirty", ([20, 80], [190, 80]))
         draw_params(creature.fun, "Fun", ([20, 140], [190, 140]))
 
-        screen.blit(font.render("You can feed your pet by pressing '1'", True, (255, 255, 255)), [50, 650])
-        screen.blit(font.render("You can play with your pet by pressing '2'", True, (255, 255, 255)), [50, 750])
-        screen.blit(font.render("You can wash your pet by pressing '3'", True, (255, 255, 255)), [50, 850])
+        screen.blit(font_min.render("You can feed your pet by pressing '1'", True, (255, 255, 255)), [50, 650])
+        screen.blit(font_min.render("You can play with your pet by pressing '2'", True, (255, 255, 255)), [50, 675])
+        screen.blit(font_min.render("You can wash your pet by pressing '3'", True, (255, 255, 255)), [50, 700])
         for i in events:
             if i.type == pygame.QUIT:
                 sys.exit()
