@@ -1,9 +1,7 @@
 import pygame
 import load_files
 
-SCR_SIZE = (700, 880)
-FOR_QUIT = (2.9, 2.9)
-FOR_PET = (2.9, 3.75)
+SCR_SIZE = (700, 800)
 
 pygame.init()
 screen = pygame.display.set_mode(SCR_SIZE)
@@ -13,5 +11,6 @@ image = load_files.load_image('Background.png')
 background_image = pygame.transform.scale(image, SCR_SIZE)
 
 creatures = pygame.sprite.Group()
+buttons = pygame.sprite.Group()
 font = pygame.font.SysFont('agencyfb', 65)
 font_min = pygame.font.SysFont('agencyfb', 25)

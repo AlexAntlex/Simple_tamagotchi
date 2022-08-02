@@ -1,17 +1,11 @@
 from datetime import datetime
 import sys
-import keyboard
 import pygame
-import load_files
-from config import screen, background_image, clock, SCR_SIZE, FOR_QUIT, FOR_PET, creatures, font, font_min
-from models.Buttons import simple_buttons
+from config import screen, background_image, clock, SCR_SIZE, creatures, font, font_min, buttons
+from models.Buttons import Buttons
 from models.Dog import Dog, Brush, Ball, Bowl
 
 pygame.init()
-
-bowl = ['empty_bowl.png', 'Eat_bowl.png']
-
-ball_image = load_files.load_image('ball.png')
 
 
 def draw_params(pet, param, text_xy):
@@ -27,7 +21,8 @@ def pet():
     brush = Brush()
     ball = Ball()
     bowl = Bowl()
-    creatures.add(creature, brush, ball, bowl)
+    b_quit = Buttons('Quit.png', (SCR_SIZE[0] / 2, SCR_SIZE[1] / 5 * 4))
+    creatures.add(creature, brush, ball, bowl, b_quit)
     time = datetime.today().strftime("%H.%M%S")
     while True:
         new_time = datetime.today().strftime("%H.%M%S")
@@ -73,29 +68,31 @@ def pet():
                         creature.set_hunger(True)
                     if type(cret) == Ball:
                         creature.set_fun(True)
+                    if b_quit.rect == cret.rect:
+                        sys.exit()
         pygame.display.update()
         clock.tick(60)
 
 
 def main():
     while True:
-        mouse = pygame.mouse.get_pos()
         screen.blit(background_image, (0, 0))
         events = pygame.event.get()
+        b_quit = Buttons('Quit.png', (SCR_SIZE[0] / 2, SCR_SIZE[1] / 2))
+        b_start = Buttons('Start.png', (SCR_SIZE[0] / 2, SCR_SIZE[1] / 3.5))
+        buttons.add(b_quit, b_start)
+        buttons.draw(screen)
         for i in events:
             if i.type == pygame.QUIT:
                 sys.exit()
-
             if i.type == pygame.MOUSEBUTTONDOWN:
-                if SCR_SIZE[0] / FOR_QUIT[0] <= mouse[0] <= SCR_SIZE[0] / FOR_QUIT[0] + 140 \
-                        and SCR_SIZE[1] / FOR_QUIT[1] <= mouse[1] <= SCR_SIZE[1] / FOR_QUIT[1] + 40:
-                    sys.exit()
-                if SCR_SIZE[0] / FOR_PET[0] <= mouse[0] <= SCR_SIZE[0] / FOR_PET[0] + 140 \
-                        and SCR_SIZE[1] / FOR_PET[1] <= mouse[1] <= SCR_SIZE[1] / FOR_PET[1] + 40:
-                    pet()
-
-        simple_buttons("Quit", FOR_QUIT[0], FOR_QUIT[1], mouse)
-        simple_buttons("Pet", FOR_PET[0], FOR_PET[1], mouse)
+                pos = pygame.mouse.get_pos()
+                clicked_sprites = [s for s in buttons if s.rect.collidepoint(pos)]
+                for sprt in clicked_sprites:
+                    if b_quit.rect == sprt.rect:
+                        sys.exit()
+                    if b_start.rect == sprt.rect:
+                        pet()
         pygame.display.update()
         clock.tick(60)
 

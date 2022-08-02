@@ -92,7 +92,6 @@ class Ball(pygame.sprite.Sprite):
 
 
 class Bowl(pygame.sprite.Sprite):
-    #load_files.load_image('ball.png')
     bowl_image = ['empty_bowl.png', 'Eat_bowl.png']
 
     def __init__(self):
