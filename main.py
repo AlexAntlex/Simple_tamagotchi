@@ -1,23 +1,17 @@
 from datetime import datetime
 import sys
-
 import keyboard
 import pygame
-
+import load_files
 from config import screen, background_image, clock, SCR_SIZE, FOR_QUIT, FOR_PET, creatures, font, font_min
 from models.Buttons import simple_buttons
-from models.Dog import Dog
+from models.Dog import Dog, Brush, Ball, Bowl
 
 pygame.init()
 
+bowl = ['empty_bowl.png', 'Eat_bowl.png']
 
-def pressed_key(event):
-    if event.name == '1' and event.event_type == 'down':
-        creature.set_hunger(True)
-    if event.name == '2' and event.event_type == 'down':
-        creature.set_fun(True)
-    if event.name == '3' and event.event_type == 'down':
-        creature.set_dirty(True)
+ball_image = load_files.load_image('ball.png')
 
 
 def draw_params(pet, param, text_xy):
@@ -30,14 +24,21 @@ def draw_params(pet, param, text_xy):
 def pet():
     global creature
     creature = Dog(50, 20, 70)
-    creatures.add(creature)
+    brush = Brush()
+    ball = Ball()
+    bowl = Bowl()
+    creatures.add(creature, brush, ball, bowl)
     time = datetime.today().strftime("%H.%M%S")
-    keyboard.hook(pressed_key)
     while True:
         new_time = datetime.today().strftime("%H.%M%S")
         events = pygame.event.get()
         screen.blit(background_image, (0, 0))
         creatures.draw(screen)
+
+        if creature.eat:
+            bowl.eat(True)
+        else:
+            bowl.eat(False)
         if float(new_time) - float(time) > 0.0005:
             time = datetime.today().strftime("%H.%M%S")
             creature.set_fun()
@@ -59,12 +60,19 @@ def pet():
         draw_params(creature.dirty, "Dirty", ([20, 80], [190, 80]))
         draw_params(creature.fun, "Fun", ([20, 140], [190, 140]))
 
-        screen.blit(font_min.render("You can feed your pet by pressing '1'", True, (255, 255, 255)), [50, 650])
-        screen.blit(font_min.render("You can play with your pet by pressing '2'", True, (255, 255, 255)), [50, 675])
-        screen.blit(font_min.render("You can wash your pet by pressing '3'", True, (255, 255, 255)), [50, 700])
         for i in events:
             if i.type == pygame.QUIT:
                 sys.exit()
+            if i.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                clicked_sprites = [s for s in creatures if s.rect.collidepoint(pos)]
+                for cret in clicked_sprites:
+                    if type(cret) == Brush:
+                        creature.set_dirty(True)
+                    if type(cret) == Bowl:
+                        creature.set_hunger(True)
+                    if type(cret) == Ball:
+                        creature.set_fun(True)
         pygame.display.update()
         clock.tick(60)
 
